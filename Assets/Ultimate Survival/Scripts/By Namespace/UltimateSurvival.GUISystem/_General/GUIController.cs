@@ -10,9 +10,11 @@ namespace UltimateSurvival.GUISystem
 		public PlayerEventHandler Player { get; private set; }
 
 		/// <summary>The main Canvas that's used for the GUI elements.</summary>
+        /// UI界面的主画布
 		public Canvas Canvas { get { return m_Canvas; } }
 
 		/// <summary>All the item collections that are part of the GUI.</summary>
+        /// 所有GUI的集合
 		public ItemContainer[] Containers { get; private set; }
 
 		public Font Font { get { return m_Font; } }
@@ -20,29 +22,30 @@ namespace UltimateSurvival.GUISystem
 		[Header("Setup")]
 
 		[SerializeField]
-		private Canvas m_Canvas;
+		private Canvas m_Canvas;//画布
 
 		[SerializeField]
-		private Camera m_GUICamera;
+		private Camera m_GUICamera;//画布相机
 
 		[SerializeField]
-		private Font m_Font;
+		private Font m_Font;//字体
 
 		[SerializeField]
 		[Reorderable]
 		[Tooltip("If the player clicks while on those rects, the current selection will not be lost.")]
-		private ReorderableRectTransformList m_SelectionBlockers;
+        //如果玩家点击在这些矩形，当前的选择不会丢失,包含3个窗口,物品信息栏,物品制作所需材料栏,以及制作界面的竖直滑动条
+        private ReorderableRectTransformList m_SelectionBlockers;
 
 		[Header("Audio")]
 
-		[SerializeField]
+		[SerializeField]//背包打开的声音
 		private AudioClip m_InventoryOpenClip;
 
-		[SerializeField]
+		[SerializeField]//背包关闭的声音
 		private AudioClip m_InventoryCloseClip;
 
-
-		public ItemContainer GetContainer(string name)
+        //获得指定物体名称上的ItemContainer组件
+        public ItemContainer GetContainer(string name)
 		{
 			for(int i = 0;i < Containers.Length;i ++)
 				if(Containers[i].Name == name)
@@ -52,7 +55,7 @@ namespace UltimateSurvival.GUISystem
 
 			return null;
 		}
-
+        //当前鼠标点是否在当前相机画布下的点
 		public bool MouseOverSelectionKeeper()
 		{
 			for (int i = 0; i < m_SelectionBlockers.Count; i++) 
@@ -67,7 +70,9 @@ namespace UltimateSurvival.GUISystem
 
 			return false;
 		}
-
+        /// <summary>
+        /// 应用所有的ItemContainer
+        /// </summary>
 		public void ApplyForAllCollections()
 		{
 			foreach(var collection in GetComponentsInChildren<ItemContainer>(true))
@@ -76,15 +81,15 @@ namespace UltimateSurvival.GUISystem
 
 		private void Awake()
 		{
-			Containers = GetComponentsInChildren<ItemContainer>(true);
-			Player = GameController.LocalPlayer;
+			Containers = GetComponentsInChildren<ItemContainer>(true);//获得子物体上所有包含ItemContainer的物体
+            Player = GameController.LocalPlayer;//获得Player
 
-			DontDestroyOnLoad(gameObject);
-		}
+			DontDestroyOnLoad(gameObject);//不要摧毁GUIController
+        }
 
 		private void Start()
 		{
-			InventoryController.Instance.State.AddChangeListener(OnChanged_InventoryState);
+			InventoryController.Instance.State.AddChangeListener(OnChanged_InventoryState);//声音事件监听
 		}
 
 		private void OnChanged_InventoryState()
