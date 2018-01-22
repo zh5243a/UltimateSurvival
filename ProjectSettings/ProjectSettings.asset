@@ -4,7 +4,7 @@
 PlayerSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 14
-  productGUID: 00000000000000000000000000000000
+  productGUID: a86e59d2ab46c2b4693e93f38469f652
   AndroidProfiler: 0
   AndroidFilterTouchesWhenObscured: 0
   defaultScreenOrientation: 4
@@ -723,10 +723,10 @@ PlayerSettings:
     Purchasing: 0
     UNet: 0
     Unity_Ads: 0
-  facebookSdkVersion: 
+  facebookSdkVersion: 7.9.4
   apiCompatibilityLevel: 2
   cloudProjectId: a874c23a-131b-4d31-962e-e4d134308bdc
-  projectName: 
+  projectName: UltimateSurvival
   organizationId: sltkit
   cloudEnabled: 0
   enableNativePlatformBackendsForNewInputSystem: 0
