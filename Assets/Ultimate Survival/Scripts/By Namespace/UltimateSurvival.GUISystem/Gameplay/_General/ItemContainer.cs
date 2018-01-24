@@ -5,36 +5,43 @@ using UnityEngine.EventSystems;
 
 namespace UltimateSurvival.GUISystem
 {
-	/// <summary>
-	/// Used to display an item container graphically.
-	/// </summary>
-	public sealed class ItemContainer : GUIBehaviour
+    /// <summary>
+    /// Used to display an item container graphically.
+    /// 用于以图形方式显示项目容器。
+    /// </summary>
+    public sealed class ItemContainer : GUIBehaviour
 	{
 		/// <summary> Sent when a slot displayer is refreshed (Usually when it's item is updated / removed / added).</summary>
 		public Message<Slot> Slot_Refreshed = new Message<Slot>();
 
 		/// <summary> Raised when a slot displayer that is part of this collection, has the pointer down on it. </summary>
+        /// //格子按下委托
 		public event Action<PointerEventData, Slot> Slot_PointerDown;
 
 		/// <summary> Raised when a slot displayer that is part of this collection, has the pointer up on it. </summary>
+        /// //格子抬起委托
 		public event Action<PointerEventData, Slot> Slot_PointerUp;
 
 		/// <summary> Raised when a slot displayer that is part of this collection, is selected. </summary>
+        /// //选择格子委托
 		public event Action<BaseEventData, Slot> Slot_Select;
 
 		/// <summary> Raised when IBeginDragHandler.OnBeginDrag is called on a child slot displayer. </summary>
+        /// //格子开始拖拽委托
 		public event DragAction Slot_BeginDrag;
 
 		/// <summary> Raised when IDragHandler.OnDrag is called on a child slot displayer. </summary>
+        /// //格子拖拽中委托
 		public event DragAction Slot_Drag;
 
 		/// <summary> Raised when IEndDragHandler.OnEndDrag is called on a child slot displayer. </summary>
+        /// //格子拖拽结束委托
 		public event DragAction Slot_EndDrag;
 
 		public bool IsOpen { get { return m_SetUp && (!m_Window || m_Window.IsOpen); } }
 
 		public string Name { get { return _Name; } }
-
+        //Slot格子的集合
 		public List<Slot> Slots { get; private set; }
 
 		[SerializeField] 
@@ -42,20 +49,24 @@ namespace UltimateSurvival.GUISystem
 	
 		[SerializeField]
 		[Tooltip("It is optional. If you assign a window, the open state will be taken from the window, otherwise the container will always be considered open.")]
+        //这是可选的。 如果您指定一个窗口，打开状态将从窗口中取出，否则容器将始终被视为打开。
 		private Window m_Window;
 
 		[Header("Slots")]
 
 		[SerializeField]
 		[Tooltip("All the created slots will be based on this template.")]
+        //所有插槽都使用这个Slot
 		private Slot m_SlotTemplate;
 
 		[SerializeField]
 		[Tooltip("The parent of the slots, usually it has attached a GridLayoutGroup, HorizontalLayoutGroup, etc, so they are automatically arranged.")]
+        //插槽的父节点
 		private Transform m_SlotsParent;
 
 		[SerializeField]
 		[Range(0, 100)]
+        [Tooltip("格子数量")]
 		private int m_PreviewSize;
 	
 		[Header("Required Stuff")]
@@ -102,12 +113,13 @@ namespace UltimateSurvival.GUISystem
 			}
 
 			m_ItemHolders = itemHolders;
-
+            //预设体格式是否显示
 			bool previousState = m_SlotTemplate.gameObject.activeSelf;
+            //设置格子显示
 			m_SlotTemplate.gameObject.SetActive(true);
-
+            //每个格子链接与之对应的物体
 			PrepareGUIForSlots(m_SlotsParent, m_SlotTemplate);
-
+            //设置格子预设体是否显示
 			m_SlotTemplate.gameObject.SetActive(previousState);
 
 			m_SetUp = true;
@@ -122,13 +134,14 @@ namespace UltimateSurvival.GUISystem
 			return false;
 		}
 
-		/// <summary>
-		/// Tries to add an amount of items in this collection.
-		/// </summary>
-		/// <param name="itemData"> The data of the item you want to add. </param>
-		/// <param name="amount"> How many items of this type you want to add?. </param>
-		/// <param name="added"> This value represents the amount of items that were added, if the collection was almost full, some of the items might've not been added. </param>
-		public bool TryAddItem(ItemData itemData, int amount, out int added)
+        /// <summary>
+        /// Tries to add an amount of items in this collection.
+        /// 试图在该集合中添加大量项目。
+        /// </summary>
+        /// <param name="itemData"> The data of the item you want to add. </param>
+        /// <param name="amount"> How many items of this type you want to add?. </param>
+        /// <param name="added"> This value represents the amount of items that were added, if the collection was almost full, some of the items might've not been added. </param>
+        public bool TryAddItem(ItemData itemData, int amount, out int added)
 		{
 			added = 0;
 			CollectionUtils.AddItem(itemData, amount, Slots, out added);
@@ -308,10 +321,11 @@ namespace UltimateSurvival.GUISystem
 
 		private void Awake()
 		{
+            //获得所有的格子
 			Slots = new List<Slot>();
 			GetComponentsInChildren<Slot>(Slots);
 		}
-
+        //格子按下操作
 		private void On_Slot_PointerDown(PointerEventData data, Slot slot)
 		{
 			if(Slot_PointerDown != null)
@@ -347,41 +361,42 @@ namespace UltimateSurvival.GUISystem
 				}
 			}
 		}
-
+        //格子抬起操作
 		private void On_Slot_PointerUp(PointerEventData data, Slot slot)
 		{
 			if(Slot_PointerUp != null)
 				Slot_PointerUp(data, slot);
 		}
+        //格子筛选操作
 		private void On_Slot_Select(BaseEventData data, Slot slot)
 		{
 			if(Slot_Select != null)
 				Slot_Select(data, slot);
 		}
-
+        //格子开始拖动
 		private void On_Slot_BeginDrag(PointerEventData data, Slot slot)
 		{
 			if(Slot_BeginDrag != null)
 				Slot_BeginDrag(data, slot, this);
 		}
-
+        //格子拖动
 		private void On_Slot_Drag(PointerEventData data, Slot slot)
 		{
 			if(Slot_Drag != null)
 				Slot_Drag(data, slot, this);
 		}
-
+        //格子结束拖动
 		private void On_Slot_EndDrag(PointerEventData data, Slot slot)
 		{
 			if(Slot_EndDrag != null)
 				Slot_EndDrag(data, slot, this);
 		}
-
+        //格子刷新
 		private void On_Slot_Refreshed(Slot slot)
 		{
 			Slot_Refreshed.Send(slot);
 		}
-
+        //激活格子
 		private void ActivateSlots(Transform parent, Slot template, int count, bool active)
 		{
 			for(int i = 0;i < count;i ++)
@@ -391,22 +406,27 @@ namespace UltimateSurvival.GUISystem
 					parent.GetChild(currentIndex).gameObject.SetActive(active);
 			}
 		}
-
+        //刷新UI的格子
 		private void PrepareGUIForSlots(Transform parent, Slot template)
 		{
 			OnSlotsDiscarded();
 
-			// Enable as many slots as required to satisfy the opened collection.
-			ActivateSlots(parent, template, Mathf.Clamp(m_ItemHolders.Count, 0, Slots.Count), true);
+            // Enable as many slots as required to satisfy the opened collection.
+           // 启用所需的多个插槽，以满足打开的集合
+            ActivateSlots(parent, template, Mathf.Clamp(m_ItemHolders.Count, 0, Slots.Count), true);
 
-			// If more slots are needed, create them.
-			if(m_ItemHolders.Count > Slots.Count)
+            // If more slots are needed, create them.
+            //如果需要更多的插槽，创建它们。
+            if (m_ItemHolders.Count > Slots.Count)
 			{
+                //创建个数
 				int spawnCount = m_ItemHolders.Count - Slots.Count;
 
 				// Create new ones if it's required.
+                //如果需要的话创建新的
 				for(int i = 0;i < spawnCount;i ++)
 				{
+                    ///创建一个新的格子,并添加到格子列表中
 					var slot = Instantiate<Slot>(template);
 					slot.transform.SetParent(parent);
 					slot.transform.localPosition = Vector3.zero;
@@ -415,18 +435,19 @@ namespace UltimateSurvival.GUISystem
 					Slots.Add(slot);
 				}
 			}
-			// If there are too many slots, disable the surplus.
-			else if(m_ItemHolders.Count < Slots.Count)
+            // If there are too many slots, disable the surplus.
+            //如果有太多的插槽，禁用多余的
+			else if (m_ItemHolders.Count < Slots.Count)
 				ActivateSlots(parent, template, Slots.Count - m_ItemHolders.Count, false);
 
 			//print(string.Format("Slots Data Count: {0} | Slots Count: {1}", m_SlotsData.Count, Slots.Count));
-
+            //
 			for(int i = 0;i < m_ItemHolders.Count;i ++)
 				Slots[i].LinkWithHolder(m_ItemHolders[i]);
 
 			OnSlotsCreated();
 		}
-
+        //移除格子的事件监听
 		private void OnSlotsDiscarded()
 		{
 			foreach(var slot in Slots)
@@ -440,7 +461,7 @@ namespace UltimateSurvival.GUISystem
 				slot.Refreshed.RemoveListener(On_Slot_Refreshed);
 			}
 		}
-
+        //创建格子的监听
 		private void OnSlotsCreated()
 		{
 			foreach(var slot in Slots)
@@ -454,7 +475,7 @@ namespace UltimateSurvival.GUISystem
 				slot.Refreshed.AddListener(On_Slot_Refreshed);
 			}
 		}
-
+        //移除格子
 		private void RemoveSlots(Transform parent, Slot template)
 		{
 			// Remove the current slots.
@@ -464,7 +485,7 @@ namespace UltimateSurvival.GUISystem
 				if(parent.GetChild(parent.childCount - 1) != template.transform)
 					DestroyImmediate(parent.GetChild(parent.childCount - 1).gameObject);
 		}
-
+        //创建格子
 		private void CreateSlots(Transform parent, Slot template)
 		{
 			// Create the new ones.

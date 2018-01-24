@@ -3,7 +3,7 @@
 namespace UltimateSurvival
 {
 	/// <summary>
-	/// 
+	/// 实体事件监听程序
 	/// </summary>
 	public class EntityEventHandler : MonoBehaviour
 	{

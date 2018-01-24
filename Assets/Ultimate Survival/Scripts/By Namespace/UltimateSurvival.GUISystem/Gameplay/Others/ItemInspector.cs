@@ -80,7 +80,7 @@ namespace UltimateSurvival.GUISystem
 			
 			m_InventoryContainer = Controller.GetContainer("Inventory");
 		}
-
+        //格子按下抬起后执行的操作
 		private void On_Slot_PointerUp(BaseEventData data, Slot slot)
 		{
 			bool shouldOpenUp = 
@@ -105,40 +105,40 @@ namespace UltimateSurvival.GUISystem
 				StartCoroutine(C_WaitAndSelect());
 			}
 		}
-
+        //显示物品信息面板
 		private void ShowInfo(SavableItem item)
 		{
-			// Name.
+			// Name.物品的名字
 			m_ItemName.text = (item.ItemData.DisplayName == string.Empty) ? item.ItemData.Name : item.ItemData.DisplayName;
 
-			// Main description.
+			// Main description.//物品的介绍
 			if(item.ItemData.Descriptions.Length > 0)
 				m_MainDescription.text = item.GetDescription(0);
 			else
 				m_MainDescription.text = "";
 
-			// Secondary description.
+			// Secondary description.//二级描述
 			if(item.ItemData.Descriptions.Length > 1)
 				m_SecondaryDescription.text = item.GetDescription(1);
 			else
 				m_SecondaryDescription.text = "";
 
-			// Icon.
+			// Icon.//物品的图片
 			m_Icon.sprite = item.ItemData.Icon;
 
-			// Durability bar.
-			if(item.HasProperty("Durability"))
+			// Durability bar.耐久
+			if(item.HasProperty("Durability"))//物品有耐久属性,显示耐久UI,并从当前物品中获得耐久属性值
 			{
 				if(!m_DurabilityBar.Active)
 					m_DurabilityBar.SetActive(true);
-				
+				//获得装备的耐久并赋值
 				m_DurabilityBar.SetFillAmount(item.GetPropertyValue("Durability").Float.Ratio);
 			}
-			else if(m_DurabilityBar.Active)
+			else if(m_DurabilityBar.Active)//无耐久属性
 				m_DurabilityBar.SetActive(false);
 
 			// Magazine.
-			ItemProperty.Value property;
+			ItemProperty.Value property; //物品的属性
 			if(item.FindPropertyValue("Magazine", out property))
 			{
 				var magazine = property.IntRange;

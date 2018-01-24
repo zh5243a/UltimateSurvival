@@ -14,11 +14,12 @@ namespace UltimateSurvival
 		private Action m_Listeners;
 
 
-		/// <summary>
-		/// Registers a method that will try to execute this action.
-		/// NOTE: Only 1 tryer is allowed!
-		/// </summary>
-		public void SetTryer(TryerDelegate tryer)
+        /// <summary>
+        /// Registers a method that will try to execute this action.
+        /// 注册将尝试执行此操作的方法。
+        /// NOTE: Only 1 tryer is allowed!
+        /// </summary>
+        public void SetTryer(TryerDelegate tryer)
 		{
 			m_Tryer = tryer;
 		}

@@ -17,10 +17,11 @@ namespace UltimateSurvival
 		private Action m_OnStop;
 
 
-		/// <summary>
-		/// This will register a method that will approve or disapprove the starting of this activity.
-		/// </summary>
-		public void AddStartTryer(TryerDelegate tryer)
+        /// <summary>
+        /// This will register a method that will approve or disapprove the starting of this activity.
+        /// 这将注册一个方法，该方法将批准或不赞成此活动的启动。
+        /// </summary>
+        public void AddStartTryer(TryerDelegate tryer)
 		{
 			m_StartTryers += tryer;
 		}

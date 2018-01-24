@@ -55,7 +55,7 @@ namespace UltimateSurvival
 		}
 
 		/// <summary>
-		/// 
+		/// 格子拖动
 		/// </summary>
 		private void On_Slot_BeginDrag(PointerEventData data, Slot slot, ItemContainer collection)
 		{
@@ -71,20 +71,23 @@ namespace UltimateSurvival
 				int initialAmount = itemUnderPointer.CurrentInStack;
 				int half = initialAmount / 2;
 				itemUnderPointer.CurrentInStack = initialAmount - half;
-
+                //将拿到手上的值赋值给移动中的物体
 				m_DraggedItem = new SavableItem(itemUnderPointer.ItemData, half, itemUnderPointer.CurrentPropertyValues);
+                //刷新背包格子的数量
 				slot.Refresh();
 			}
 			else
 			{
+                //如果全部拿走,就将当前格子设为空
 				slot.ItemHolder.SetItem(null);
+                //手上的物品为背包格子的所有数量
 				m_DraggedItem = itemUnderPointer;
 			}
-
+            ///拖动中物品的位置,父物体,以及缩放
 			m_DraggedItemRT = slot.GetDragTemplate(m_DraggedItem, m_DraggedItemAlpha);
 			m_DraggedItemRT.SetParent(m_ParentCanvasRT, true);
 			m_DraggedItemRT.localScale = Vector3.one * m_DraggedItemScale;
-
+            //获得相机
 			Camera cam = data.pressEventCamera;
 			Vector3 worldPoint;
 			if(RectTransformUtility.ScreenPointToWorldPointInRectangle(m_ParentCanvasRT, (Vector3)data.position, cam, out worldPoint)) 
@@ -108,42 +111,43 @@ namespace UltimateSurvival
 		}
 			
 		/// <summary>
-		/// 
+		/// 拖拽结束
 		/// </summary>
 		private void On_Slot_EndDrag(PointerEventData data, Slot initialSlot, ItemContainer collection)
 		{
 			if(!m_Dragging)
 				return;
-
+            //获得所有的格子
 			var slots = collection.Slots;
-
+            //当前鼠标下的游戏物体
 			GameObject objectUnderPointer = data.pointerCurrentRaycast.gameObject;
-			Slot slotUnderPointer = null;
+			Slot slotUnderPointer = null;//获得鼠标下物体的格子
 			if(objectUnderPointer)
 				slotUnderPointer = objectUnderPointer.GetComponent<Slot>();
 			
-			// Is there a slot under our pointer?
+			// Is there a slot under our pointer?我们的指针下是否有格子
 			if(slotUnderPointer)
 			{
-				// See if the slot allows this type of item.
-				if(slotUnderPointer.AllowsItem(m_DraggedItem))
+                // See if the slot allows this type of item.看看插槽是否允许这种类型的项目。
+                if (slotUnderPointer.AllowsItem(m_DraggedItem))
 				{
-					// If the slot is empty...
+					// If the slot is empty...如果格子是空的
 					if(!slotUnderPointer.HasItem)
 					{
+                        //将当前手上的物品移动到空格子中
 						if(slotUnderPointer.ItemHolder)
 							slotUnderPointer.ItemHolder.SetItem(m_DraggedItem);
 						else
 							Debug.LogError("You tried to drop an item over a Slot which is not linked with any holder.", this);
 					}
-					// If the slot is not empty...
+					// If the slot is not empty...//如果格子不是空的
 					else
 					{
 						SavableItem itemUnderPointer = slotUnderPointer.CurrentItem;
 
-						// Can we stack the items?
+						// Can we stack the items?//是否可以堆放物品
 						bool canStackItems = (itemUnderPointer.Id == m_DraggedItem.Id && itemUnderPointer.ItemData.StackSize > 1 && itemUnderPointer.CurrentInStack < itemUnderPointer.ItemData.StackSize);
-						if(canStackItems)
+						if(canStackItems)//可以的话堆放,(如果超出上限,显示多余的数量)不可以的话替换
 							OnItemsAreStackable(slotUnderPointer, initialSlot);	
 						else
 							On_ItemNotStackable(slotUnderPointer, initialSlot);
@@ -176,12 +180,12 @@ namespace UltimateSurvival
 		/// </summary>
 		private void OnItemsAreStackable(Slot slotUnderPointer, Slot initialSlot)
 		{
-			// Add as much as possible to the item's stack.
-			int added;
+            // Add as much as possible to the item's stack.尽可能多地添加物品的堆叠。
+            int added;
 			slotUnderPointer.ItemHolder.TryAddItem(m_DraggedItem.ItemData, m_DraggedItem.CurrentInStack, out added, m_DraggedItem.CurrentPropertyValues);
 
-			// Add the remained items too.
-			int remainedToAdd = m_DraggedItem.CurrentInStack - added;
+            // Add the remained items too.添加剩余的项目。
+            int remainedToAdd = m_DraggedItem.CurrentInStack - added;
 			if(remainedToAdd > 0)
 			{
 				if(initialSlot.HasItem)

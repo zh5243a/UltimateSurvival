@@ -215,7 +215,7 @@ namespace UltimateSurvival
 				yield return null;
 			}
 		}
-			
+		//单次攻击
 		private bool OnTry_Attack(bool continuously)
 		{
 			if(m_EquippedWeapon == null)

@@ -2,7 +2,8 @@
 
 namespace UltimateSurvival.GUISystem
 {
-	public class GUIBehaviour : MonoBehaviour 
+	public class 
+        GUIBehaviour : MonoBehaviour 
 	{
 		public GUIController Controller 
 		{

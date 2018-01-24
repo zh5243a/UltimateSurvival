@@ -24,7 +24,7 @@ namespace UltimateSurvival
 
 			Player.PlaceObject.AddListener(OnSucceded_PlaceObject);
 		}
-
+/*
 		private void OnGUI()
 		{
 			if(!m_ShowControls)
@@ -65,7 +65,7 @@ namespace UltimateSurvival
 			if(GUI.Button(rect, "Quit!"))
 				Application.Quit();
 		}
-			
+			*/
 		private void Update()
 		{
 			// Inventory.
@@ -104,6 +104,7 @@ namespace UltimateSurvival
 
 				// Jump.
 				if(m_Input.GetButtonDown("Jump"))
+
 					Player.Jump.TryStart();
 
 				// Run.

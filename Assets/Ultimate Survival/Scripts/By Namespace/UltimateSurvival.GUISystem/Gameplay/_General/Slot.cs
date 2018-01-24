@@ -13,9 +13,11 @@ namespace UltimateSurvival.GUISystem
 		public bool Active { get { return m_Active; } }
 
 		[SerializeField]
+        [Tooltip("背景")]
 		private GameObject m_Background;
 
 		[SerializeField]
+        [Tooltip("装备的耐久")]
 		private Image m_Bar;
 
 		[SerializeField]
@@ -23,18 +25,19 @@ namespace UltimateSurvival.GUISystem
 
 		[SerializeField]
 		[Range(0f, 1f)]
+        [Tooltip("耐久")]
 		private float m_Durability;
 
 		private bool m_Active = true;
 
-
+        //当前格子的内容设置隐藏
 		public void SetActive(bool active)
 		{
 			m_Background.SetActive(active);
 			m_Bar.enabled = active;
 			m_Active = active;
 		}
-
+        //设置装备的耐久
 		public void SetFillAmount(float fillAmount)
 		{
 			m_Bar.color = m_ColorGradient.Evaluate(fillAmount);
@@ -57,15 +60,15 @@ namespace UltimateSurvival.GUISystem
 
 		public event BaseAction E_Deselect;
 
-		public event PointerAction PointerDown;
+		public event PointerAction PointerDown;//按下委托
 
-		public event PointerAction PointerUp;
+		public event PointerAction PointerUp;//抬起委托
 
-		public event PointerAction BeginDrag;
+		public event PointerAction BeginDrag;//开始拖拽委托
 
-		public event PointerAction Drag;
+		public event PointerAction Drag;//拖拽委托
 
-		public event PointerAction EndDrag;
+		public event PointerAction EndDrag;//结束委托
 
 		/// <summary></summary>
 		public ItemHolder ItemHolder { get; private set; }
@@ -152,6 +155,7 @@ namespace UltimateSurvival.GUISystem
 
 		/// <summary>
 		/// Refreshes so that it displays the correct item data.
+        /// 刷新Slot的UI数量
 		/// </summary>
 		public void Refresh()
 		{
